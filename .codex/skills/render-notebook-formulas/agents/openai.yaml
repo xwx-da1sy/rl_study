@@ -1,0 +1,4 @@
+interface:
+  display_name: "Render Notebook Formulas"
+  short_description: "Render notebook math and process flows as LaTeX"
+  default_prompt: "Use $render-notebook-formulas to convert formulas, mathematical notation, and structured process explanations in these Jupyter notebooks into renderable LaTeX and verify the result."
