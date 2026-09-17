@@ -9,7 +9,7 @@ Use this skill when starting or continuing a reinforcement learning lesson in th
 
 ## Learning style
 
-- Follow the progression in `notebooks/00_学习导航.ipynb`: GridWorld and returns, then tabular methods, DQN, and policy methods.
+- Follow the progression in `background_information/00_学习导航.ipynb`: GridWorld and returns, then tabular methods, DQN, and policy methods.
 - Introduce one core question per notebook. Start with what the concept means and why it is needed, then work through a small example, summarize, and end with self-check questions.
 - Connect to the learner's NumPy and PyTorch experience only where it clarifies the new concept.
 - Keep notebooks reading-focused. Use only small code cells when a quick observation supports understanding.
@@ -18,7 +18,7 @@ Use this skill when starting or continuing a reinforcement learning lesson in th
 
 ## Repository layout
 
-- Keep the navigation and lesson as separate notebooks in the same `notebooks/` folder.
+- Keep the navigation in `background_information/` and basic lessons in `rl_basics/`.
 - Do not create additional folders or Python code packages unless the user asks for them.
 - Do not create standalone Markdown lesson files.
 
