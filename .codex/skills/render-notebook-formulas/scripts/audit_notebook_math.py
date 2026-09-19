@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit Jupyter Markdown cells for common unrendered or malformed math."""
+"""检查 Jupyter Markdown 单元格中常见的未渲染或格式错误的数学表达式。"""
 
 from __future__ import annotations
 

@@ -3,3 +3,17 @@ __pycache__/
 .ipynb_checkpoints/
 drl_v1.pdf
 /tmp/
+
+# 训练输出目录
+/runs/
+/outputs/
+/checkpoints/
+
+# 深度学习模型与检查点文件
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+*.h5
+*.keras
