@@ -80,7 +80,10 @@ def check_training_pipeline() -> None:
             evaluation=replace(
                 base_config.evaluation,
                 num_episodes=2,
+                validation_interval=1,
+                validation_episodes=2,
                 checkpoint_interval=1,
+                moving_average_window=2,
                 output_dir=Path(temporary_directory),
             ),
         )
@@ -88,6 +91,7 @@ def check_training_pipeline() -> None:
         trainer = DQNTrainer(config)
         try:
             history = trainer.train()
+            trainer.load_best_model()
             evaluation = trainer.evaluate()
         finally:
             trainer.close()
@@ -95,7 +99,13 @@ def check_training_pipeline() -> None:
         assert len(history) == 2
         assert len(evaluation["episode_returns"]) == 2
         assert (Path(temporary_directory) / "last_model.pt").exists()
+        assert (Path(temporary_directory) / "best_model.pt").exists()
         assert (Path(temporary_directory) / "training_metrics.csv").exists()
+        assert (Path(temporary_directory) / "validation_metrics.csv").exists()
+        assert (Path(temporary_directory) / "test_evaluation.json").exists()
+        assert (Path(temporary_directory) / "training_curves.png").exists()
+        assert (Path(temporary_directory) / "test_comparison.png").exists()
+        assert evaluation["random_baseline_mean_return"] > 0
 
 
 def main() -> None:

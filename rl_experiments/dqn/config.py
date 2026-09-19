@@ -73,10 +73,31 @@ class TrainingConfig:
 
 @dataclass(frozen=True)
 class EvaluationConfig:
-    """模型评估和保存配置。"""
+    """模型验证、最终测试、可视化和保存配置。"""
 
-    num_episodes: int = 10
+    # 最终测试使用与训练、验证都不同的随机种子，相当于监督学习的测试集。
+    num_episodes: int = 20
+
+    # 训练过程中每隔若干回合进行一次独立验证，并按验证平均奖励保存最佳模型。
+    validation_interval: int = 25
+    validation_episodes: int = 5
+
+    # 三个随机种子区间彼此分离，避免训练、验证和最终测试使用相同场景。
+    validation_seed_offset: int = 10_000
+    test_seed_offset: int = 20_000
+    demo_seed_offset: int = 30_000
+
+    # None 表示读取 Gymnasium 环境注册信息中的 reward_threshold。
+    solved_score: float | None = None
+
+    # 移动平均窗口用于平滑训练奖励曲线，不参与模型训练。
+    moving_average_window: int = 20
+    save_plots: bool = True
+    compare_random_baseline: bool = True
+
+    # render=True 时，最终测试结束后额外打开一个人类可见的演示窗口。
     render: bool = False
+    demo_episodes: int = 1
     checkpoint_interval: int = 50
     output_dir: Path = field(default_factory=lambda: Path("runs/cartpole_dqn"))
 
@@ -145,6 +166,8 @@ class DQNConfig:
 
         if not 0 < self.training.gamma <= 1:
             raise ValueError("gamma 必须满足 0 < gamma <= 1。")
+        if self.training.seed < 0:
+            raise ValueError("训练随机种子不能小于 0。")
         if self.training.num_episodes <= 0:
             raise ValueError("训练回合数必须大于 0。")
         if self.training.max_steps_per_episode <= 0:
@@ -155,7 +178,31 @@ class DQNConfig:
             raise ValueError("target_update_frequency 必须大于 0。")
 
         if self.evaluation.num_episodes <= 0:
-            raise ValueError("评估回合数必须大于 0。")
+            raise ValueError("最终测试回合数必须大于 0。")
+        if self.evaluation.validation_interval <= 0:
+            raise ValueError("validation_interval 必须大于 0。")
+        if self.evaluation.validation_episodes <= 0:
+            raise ValueError("validation_episodes 必须大于 0。")
+        if min(
+            self.evaluation.validation_seed_offset,
+            self.evaluation.test_seed_offset,
+            self.evaluation.demo_seed_offset,
+        ) < 0:
+            raise ValueError("评估随机种子偏移量不能小于 0。")
+        if len(
+            {
+                self.evaluation.validation_seed_offset,
+                self.evaluation.test_seed_offset,
+                self.evaluation.demo_seed_offset,
+            }
+        ) != 3:
+            raise ValueError("验证、测试和演示必须使用不同的随机种子偏移量。")
+        if self.evaluation.solved_score is not None and self.evaluation.solved_score <= 0:
+            raise ValueError("solved_score 必须大于 0 或设置为 None。")
+        if self.evaluation.moving_average_window <= 0:
+            raise ValueError("moving_average_window 必须大于 0。")
+        if self.evaluation.demo_episodes <= 0:
+            raise ValueError("demo_episodes 必须大于 0。")
         if self.evaluation.checkpoint_interval <= 0:
             raise ValueError("模型保存间隔必须大于 0。")
 

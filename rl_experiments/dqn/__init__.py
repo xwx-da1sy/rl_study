@@ -4,7 +4,7 @@ from .config import DQNConfig, SchedulerConfig, create_default_config
 from .agent import DQNAgent
 from .network import DQNNetworks, QNetwork, ResidualBlock, ResidualQNetwork, build_q_network
 from .replay_buffer import ReplayBuffer, Transition, TransitionBatch
-from .trainer import DQNTrainer, EpisodeRecord
+from .trainer import DQNTrainer, EpisodeRecord, ValidationRecord
 
 __all__ = [
     "DQNConfig",
@@ -19,6 +19,7 @@ __all__ = [
     "SchedulerConfig",
     "Transition",
     "TransitionBatch",
+    "ValidationRecord",
     "build_q_network",
     "create_default_config",
 ]
